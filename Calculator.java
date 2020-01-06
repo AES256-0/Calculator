@@ -49,6 +49,15 @@ class Calculator extends Frame implements ActionListener
 						sb=new StringBuffer();
 						Calculation.top=-1;
 						break;
+					case "%":
+						if(Calculation.top==-1)
+							sb=new StringBuffer(String.valueOf(Double.parseDouble(sb.toString())/100));
+						else
+						{
+							sb=new StringBuffer(String.valueOf(Calculation.arr[Calculation.top]/100));
+							Calculation.arr[Calculation.top]=Double.parseDouble(sb.toString());
+						}
+						break;	
 					case "1/x":
 						if(Calculation.top==-1)
 							sb=new StringBuffer(String.valueOf((1/Double.parseDouble(sb.toString()))));
@@ -123,8 +132,13 @@ public static double solution(char exp[],StringTokenizer ob)
 	int flag=0;
 	for(int i=0;i<exp.length;i++)
 	{
-		if(!(42<=(int)exp[i] && (int)exp[i]<=47) && flag!=1)     //3*4*5-5-6-4/3
-
+		if(exp[0]=='-' && i==0)
+		{
+			arr[++top]=-(Double.parseDouble(ob.nextToken()));
+			flag=1;
+			continue;
+		}
+		if(!(42<=(int)exp[i] && (int)exp[i]<=47) && flag!=1) 
 		{
 			flag=1;
 			while(ob.hasMoreTokens())
@@ -133,8 +147,6 @@ public static double solution(char exp[],StringTokenizer ob)
 				arr[++top]=-(Double.parseDouble(ob.nextToken()));
 			else
 			{
-			//	String ss=ob.nextToken();
-			//	System.out.println(ss);
 			arr[++top]=Double.parseDouble(ob.nextToken());
 			}
 			break;
@@ -154,7 +166,7 @@ public static double solution(char exp[],StringTokenizer ob)
 			else
 			{
 				
-											//8.0*2/2
+										
 				if(precedence(exp[i])>precedence(op[opt]))  
 				{
 					op[++opt]=exp[i];
@@ -162,9 +174,7 @@ public static double solution(char exp[],StringTokenizer ob)
 				}
 				else
 				{
-					System.out.println("top:"+top+"    "+arr[top]);
 					calculation(op[opt--]);
-					System.out.println("top:"+top+" "+arr[top]);
 				}
 				
 			}
@@ -180,11 +190,11 @@ public static double solution(char exp[],StringTokenizer ob)
 	{
 		for(int i=0;i<=opt;i++)
 		{
-		//	System.out.println(arr[top]);
 			calculation(op[opt-i]);
 		}
 		return arr[top];
 	}
+	
 
 }
 public static void calculation(char c)
@@ -204,11 +214,7 @@ public static void calculation(char c)
 			arr[top]=diff;
 			break;
 		case '*':
-				x=arr[top];
-				y=arr[--top];
-				System.out.println(x+" "+y);
-			mult=x*y;
-
+			mult=arr[top]*arr[--top];
 			arr[top]=mult;
 			break;
 		case '/':
