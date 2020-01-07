@@ -42,16 +42,19 @@ class Calculator extends Frame implements ActionListener
 				switch(name[i])
 				{
 					case "<-":
-						if(sb.length()>0)
-							sb=sb.delete(sb.length()-1,sb.length());
+						if(sb.length()>0)sb=sb.delete(sb.length()-1,sb.length());
 						break;
 					case "c":
 						sb=new StringBuffer();
 						Calculation.top=-1;
+					//	Calculation.opt=-1;
 						break;
+					case "ce":
+						if(sb.length()>0)sb=sb.delete(sb.length()-1,sb.length());
+						break;
+
 					case "%":
-						if(Calculation.top==-1)
-							sb=new StringBuffer(String.valueOf(Double.parseDouble(sb.toString())/100));
+						if(Calculation.top==-1)sb=new StringBuffer(String.valueOf(Double.parseDouble(sb.toString())/100));
 						else
 						{
 							sb=new StringBuffer(String.valueOf(Calculation.arr[Calculation.top]/100));
@@ -59,8 +62,7 @@ class Calculator extends Frame implements ActionListener
 						}
 						break;	
 					case "1/x":
-						if(Calculation.top==-1)
-							sb=new StringBuffer(String.valueOf((1/Double.parseDouble(sb.toString()))));
+						if(Calculation.top==-1)sb=new StringBuffer(String.valueOf((1/Double.parseDouble(sb.toString()))));
 						else
 						{
 							sb=new StringBuffer(String.valueOf((1/Calculation.arr[Calculation.top])));
@@ -68,8 +70,7 @@ class Calculator extends Frame implements ActionListener
 						}
 						break;
 					case "x*x":
-						if(Calculation.top==-1)
-							sb=new StringBuffer(String.valueOf(Double.parseDouble(sb.toString())*Double.parseDouble(sb.toString())));
+						if(Calculation.top==-1)sb=new StringBuffer(String.valueOf(Double.parseDouble(sb.toString())*Double.parseDouble(sb.toString())));
 						else
 						{
 							sb=new StringBuffer(String.valueOf((Calculation.arr[Calculation.top]*Calculation.arr[Calculation.top])));
@@ -78,17 +79,13 @@ class Calculator extends Frame implements ActionListener
 						}
 						break;
 					case "x^1/2":
-						if(Calculation.top==-1)
-							sb=new StringBuffer(String.valueOf(Math.pow(Double.parseDouble(sb.toString()),.5)));
+						if(Calculation.top==-1)sb=new StringBuffer(String.valueOf(Math.pow(Double.parseDouble(sb.toString()),.5)));
 						else
 						{
 							sb=new StringBuffer(String.valueOf(Math.pow(Calculation.arr[Calculation.top],.5)));
 							Calculation.arr[Calculation.top]=Double.parseDouble(sb.toString());
 						}
-						break;
-
-
-							
+						break;		
 					case "=":
 						StringTokenizer ob=new StringTokenizer(sb.toString(),"-+*/");
 						double ans=Calculation.solution(sb.toString().toCharArray(),ob);
@@ -117,16 +114,11 @@ class Windowcloseevent extends WindowAdapter
 	}
 }
 
-
-
-
-
 class Calculation
 {
 static double arr[]=new double[1000];
 static char op[]=new char[1000];
-static int top=-1;
-static int opt=-1;
+static int top=-1,opt=-1;
 public static double solution(char exp[],StringTokenizer ob)
 {
 	int flag=0;
@@ -161,23 +153,22 @@ public static double solution(char exp[],StringTokenizer ob)
 			if(opt==-1)
 			{
 				op[++opt]=exp[i];
-				break;
+			//	break;
 			}
 			else
-			{
-				
-										
+			{						
 				if(precedence(exp[i])>precedence(op[opt]))  
 				{
 					op[++opt]=exp[i];
-					break;
+			//		break;
 				}
 				else
 				{
 					calculation(op[opt--]);
-				}
-				
+					continue;
+				}	
 			}
+			break;
 			}
 		}
 
@@ -200,31 +191,30 @@ public static double solution(char exp[],StringTokenizer ob)
 public static void calculation(char c)
 {
 	double sum,diff,mult,div;
-	int a,b;
-	double x,y;
+//	int a,b;
+	int x=top,y=--top;
 	switch(c)
 	{
 		case '+':
-			sum=arr[top]+arr[--top];
-			arr[top]=sum;
+		//	sum=arr[top]+arr[--top];
+		//	arr[top]=sum;
+			arr[top]=arr[x]+arr[y];
 			break;
 		case '-':
-			a=top;
-			diff=arr[--top]+arr[a];
-			arr[top]=diff;
+		//	a=top;
+		//	diff=arr[--top]+arr[a];
+			arr[top]=arr[y]+arr[x];
 			break;
 		case '*':
-			mult=arr[top]*arr[--top];
-			arr[top]=mult;
+		//	mult=arr[top]*arr[--top];
+			arr[top]=arr[x]*arr[y];
 			break;
 		case '/':
-			a=top;
-			div=arr[--top]/arr[a];
+		//	a=top;
+			div=arr[y]/arr[x];
 			arr[top]=div;
-			break;
 	}
-}
-			
+}			
 public static int precedence(char c)
 {
 	if(c=='-' || c=='+')
