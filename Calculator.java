@@ -35,7 +35,7 @@ class Calculator extends Frame implements ActionListener
 	}
 	public void actionPerformed(ActionEvent e)
 	{
-	
+		int flag=1;
 		for(int i=0;i<b.length;i++)
 		{
 			if(e.getSource()==b[i])
@@ -87,10 +87,8 @@ class Calculator extends Frame implements ActionListener
 						}
 						break;		
 					case "=":
-						StringTokenizer ob=new StringTokenizer(sb.toString(),"-+*/");
-						double ans=Calculation.solution(sb.toString().toCharArray(),ob);
-						sb=new StringBuffer(String.valueOf(ans));
-						Calculation.opt=-1;
+						sb=Calculation.temp(String.copyValueOf(sb.toString().toCharArray()));
+						flag=0;
 						break;		
 					default:
 						if(sb.length()>0 && Calculation.verifier(sb.toString(),name[i]))
@@ -99,7 +97,10 @@ class Calculator extends Frame implements ActionListener
 							sb.append(name[i]);
 
 				}
-				tf.setText(sb.toString());
+				if(flag!=0)
+				tf.setText(sb.toString() + "\t" +Calculation.temp(String.copyValueOf(sb.toString().toCharArray())).toString());
+				else
+					tf.setText(sb.toString());
 
 			}
 		}
@@ -224,6 +225,18 @@ public static boolean verifier(String s,String name)
 		return true;
 	return false;
 }
+public static StringBuffer temp(String sb)
+{
 
+	if(sb.length()>2 && !(42<=sb.charAt(sb.length()-1) && sb.charAt(sb.length()-1)<=47) && sb.charAt(sb.length()-1)!='.')
+	{
+	StringTokenizer ob=new StringTokenizer(sb,"-+*/");
+	double ans=solution(sb.toCharArray(),ob);
+	StringBuffer s=new StringBuffer(String.valueOf(ans));
+	opt=-1;
+	return s;
+	}
+	return new StringBuffer();
+}
 }
 
