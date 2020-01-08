@@ -227,5 +227,3 @@ public static boolean verifier(String s,String name)
 
 }
 
-
-
