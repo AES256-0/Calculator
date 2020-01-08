@@ -35,6 +35,7 @@ class Calculator extends Frame implements ActionListener
 	}
 	public void actionPerformed(ActionEvent e)
 	{
+		int flag=1;
 		for(int i=0;i<b.length;i++)
 		{
 			if(e.getSource()==b[i])
@@ -47,7 +48,6 @@ class Calculator extends Frame implements ActionListener
 					case "c":
 						sb=new StringBuffer();
 						Calculation.top=-1;
-					//	Calculation.opt=-1;
 						break;
 					case "ce":
 						if(sb.length()>0)sb=sb.delete(sb.length()-1,sb.length());
@@ -87,23 +87,34 @@ class Calculator extends Frame implements ActionListener
 						}
 						break;		
 					case "=":
+						if(Calculation.verifier(sb.toString()))
+						{
 						StringTokenizer ob=new StringTokenizer(sb.toString(),"-+*/");
 						double ans=Calculation.solution(sb.toString().toCharArray(),ob);
 						sb=new StringBuffer(String.valueOf(ans));
 						Calculation.opt=-1;
+						}
+						else
+							flag=0;
 						break;		
 					default:
 						sb.append(name[i]);
 
 				}
+				if(flag==1)
 				tf.setText(sb.toString());
+				else
+					tf.setText("Enter a valid expression");
 
 			}
 		}
 	}
 	public static void main(String... s)
 	{
-		new Calculator("calculator");
+		Calculator ob=new Calculator("calculator");
+	/*	Verifierthread t1=new Verifierthread(ob);
+		Thread t=new Thread(t1,"verifier");
+		t.start();*/
 	}
 }
 class Windowcloseevent extends WindowAdapter
@@ -153,14 +164,12 @@ public static double solution(char exp[],StringTokenizer ob)
 			if(opt==-1)
 			{
 				op[++opt]=exp[i];
-			//	break;
 			}
 			else
 			{						
 				if(precedence(exp[i])>precedence(op[opt]))  
 				{
 					op[++opt]=exp[i];
-			//		break;
 				}
 				else
 				{
@@ -191,26 +200,19 @@ public static double solution(char exp[],StringTokenizer ob)
 public static void calculation(char c)
 {
 	double sum,diff,mult,div;
-//	int a,b;
 	int x=top,y=--top;
 	switch(c)
 	{
 		case '+':
-		//	sum=arr[top]+arr[--top];
-		//	arr[top]=sum;
 			arr[top]=arr[x]+arr[y];
 			break;
 		case '-':
-		//	a=top;
-		//	diff=arr[--top]+arr[a];
 			arr[top]=arr[y]+arr[x];
 			break;
 		case '*':
-		//	mult=arr[top]*arr[--top];
 			arr[top]=arr[x]*arr[y];
 			break;
 		case '/':
-		//	a=top;
 			div=arr[y]/arr[x];
 			arr[top]=div;
 	}
@@ -224,9 +226,56 @@ public static int precedence(char c)
 	else
 		return -1;
 }
-} 
+public static boolean verifier(String s)
+{	
+	if(s.endsWith("*") || s.endsWith("-") || s.endsWith("/") || s.endsWith("+"))
+		return false; 
+	for(int i=0;i<s.length()-1;i++)
+	{
+		if(42<=s.charAt(i) && s.charAt(i)<=47)
+		{
+			if(42<=s.charAt(i+1) && s.charAt(i+1)<=47)
+				return false;
+		}
+	}
+	return true;
+}
 
 
+}
+/*
+class Verifierthread implements Runnable
+{
+	Calculator s;
+	Verifierthread(Calculator s)
+	{
+		this.s=s;
+	}
+	public void run()
+	{
+		while(true)
+		{
+			try
+			{
+				if(s.sb.length()>0)
+				{
+					if(!Calculation.verifier(s.sb.toString()))
+					{
+						s.tf.setText("enter valid expression");
+					}
+				}
+				Thread.sleep(1000);
+			
+			}
+			catch(Exception e)
+			{
+				System.out.println(e);
+			}
+		}
+	}
+}
+*/
+			
 
 
 
