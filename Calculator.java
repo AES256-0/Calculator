@@ -35,7 +35,7 @@ class Calculator extends Frame implements ActionListener
 	}
 	public void actionPerformed(ActionEvent e)
 	{
-		int flag=1;
+	
 		for(int i=0;i<b.length;i++)
 		{
 			if(e.getSource()==b[i])
@@ -87,24 +87,19 @@ class Calculator extends Frame implements ActionListener
 						}
 						break;		
 					case "=":
-						if(Calculation.verifier(sb.toString()))
-						{
 						StringTokenizer ob=new StringTokenizer(sb.toString(),"-+*/");
 						double ans=Calculation.solution(sb.toString().toCharArray(),ob);
 						sb=new StringBuffer(String.valueOf(ans));
 						Calculation.opt=-1;
-						}
-						else
-							flag=0;
 						break;		
 					default:
-						sb.append(name[i]);
+						if(sb.length()>0 && Calculation.verifier(sb.toString(),name[i]))
+							sb.replace(sb.length()-1,sb.length(),name[i]);
+						else
+							sb.append(name[i]);
 
 				}
-				if(flag==1)
 				tf.setText(sb.toString());
-				else
-					tf.setText("Enter a valid expression");
 
 			}
 		}
@@ -112,9 +107,6 @@ class Calculator extends Frame implements ActionListener
 	public static void main(String... s)
 	{
 		Calculator ob=new Calculator("calculator");
-	/*	Verifierthread t1=new Verifierthread(ob);
-		Thread t=new Thread(t1,"verifier");
-		t.start();*/
 	}
 }
 class Windowcloseevent extends WindowAdapter
@@ -226,57 +218,14 @@ public static int precedence(char c)
 	else
 		return -1;
 }
-public static boolean verifier(String s)
+public static boolean verifier(String s,String name)
 {	
-	if(s.endsWith("*") || s.endsWith("-") || s.endsWith("/") || s.endsWith("+"))
-		return false; 
-	for(int i=0;i<s.length()-1;i++)
-	{
-		if(42<=s.charAt(i) && s.charAt(i)<=47)
-		{
-			if(42<=s.charAt(i+1) && s.charAt(i+1)<=47)
-				return false;
-		}
-	}
-	return true;
+	if((42<=s.charAt(s.length()-1) && s.charAt(s.length()-1)<=47)&&(42<=name.charAt(0)&& name.charAt(0)<=47))
+		return true;
+	return false;
 }
 
-
 }
-/*
-class Verifierthread implements Runnable
-{
-	Calculator s;
-	Verifierthread(Calculator s)
-	{
-		this.s=s;
-	}
-	public void run()
-	{
-		while(true)
-		{
-			try
-			{
-				if(s.sb.length()>0)
-				{
-					if(!Calculation.verifier(s.sb.toString()))
-					{
-						s.tf.setText("enter valid expression");
-					}
-				}
-				Thread.sleep(1000);
-			
-			}
-			catch(Exception e)
-			{
-				System.out.println(e);
-			}
-		}
-	}
-}
-*/
-			
-
 
 
 
