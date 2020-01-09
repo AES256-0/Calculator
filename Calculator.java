@@ -7,16 +7,19 @@ class Calculator extends Frame implements ActionListener
 {
 	Button b[]=new Button[24];
 	TextField tf=new TextField();
+	TextField nf=new TextField();
 	StringBuffer sb=new StringBuffer();
-	String name[]={"%","ce","c","<-","1/x","x*x","x^1/2","/","7","8","9","*","4","5","6","-","1","2","3","+","+/-","0",".","="};
+	String name[]={"%","ce","c","<-","1/x","x*x","x^1/2","/","7","8","9","*","4","5","6","-","1","2","3","+","exit","0",".","="};
 	Calculator(String s)
 	{
 		super(s);
-		tf.setBounds(70,0,280,100);
+		tf.setBounds(70,0,280,80);
+		nf.setBounds(70,80,280,50);
 		setSize(500,500);
 		setLayout(null);
 		setVisible(true);
 		add(tf);
+		add(nf);
 		addWindowListener(new Windowcloseevent());
 		int x=0,y=150,width=70,height=40,k=0,st=0;
 		for(int j=0;j<6;j++)
@@ -89,8 +92,12 @@ class Calculator extends Frame implements ActionListener
 						break;		
 					case "=":
 						sb=Calculation.temp(String.copyValueOf(sb.toString().toCharArray()));
+
 						flag=0;
 						break;		
+					case "exit":
+						System.exit(0);
+						break;
 					default:
 						if(sb.length()>0 && Calculation.verifier(sb.toString(),name[i]))
 							sb.replace(sb.length()-1,sb.length(),name[i]);
@@ -99,7 +106,14 @@ class Calculator extends Frame implements ActionListener
 
 				}
 				if(flag!=0)
-				tf.setText(sb.toString() + "\t\n" +Calculation.temp(String.copyValueOf(sb.toString().toCharArray())).toString());
+				{
+			// 	String n=String.format("%s %s\n",sb.toString(),Calculation.temp(String.copyValueOf(sb.toString().toCharArray())).toString());
+			//	tf.setText(sb.toString() + "\t\n" +Calculation.temp(String.copyValueOf(sb.toString().toCharArray())).toString());
+				tf.setText(sb.toString());
+				nf.setText(Calculation.temp(String.copyValueOf(sb.toString().toCharArray())).toString());
+			//	tf.setText("\n"+Calculation.temp(String.copyValueOf(sb.toString().toCharArray())).toString());
+			//	tf.setText("\n"+Calculation.temp(String.copyValueOf(sb.toString().toCharArray())).toString());
+				}
 				else
 					tf.setText(sb.toString());
 
