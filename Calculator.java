@@ -48,6 +48,7 @@ class Calculator extends Frame implements ActionListener
 					case "c":
 						sb=new StringBuffer();
 						Calculation.top=-1;
+						flag=0;
 						break;
 					case "ce":
 						if(sb.length()>0)sb=sb.delete(sb.length()-1,sb.length());
@@ -98,7 +99,7 @@ class Calculator extends Frame implements ActionListener
 
 				}
 				if(flag!=0)
-				tf.setText(sb.toString() + "\t" +Calculation.temp(String.copyValueOf(sb.toString().toCharArray())).toString());
+				tf.setText(sb.toString() + "\t\n" +Calculation.temp(String.copyValueOf(sb.toString().toCharArray())).toString());
 				else
 					tf.setText(sb.toString());
 
@@ -231,10 +232,13 @@ public static StringBuffer temp(String sb)
 	if(sb.length()>2 && !(42<=sb.charAt(sb.length()-1) && sb.charAt(sb.length()-1)<=47) && sb.charAt(sb.length()-1)!='.')
 	{
 	StringTokenizer ob=new StringTokenizer(sb,"-+*/");
+	if(ob.countTokens()>1)
+	{
 	double ans=solution(sb.toCharArray(),ob);
 	StringBuffer s=new StringBuffer(String.valueOf(ans));
 	opt=-1;
 	return s;
+	}
 	}
 	return new StringBuffer();
 }
